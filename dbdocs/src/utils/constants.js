@@ -19,9 +19,12 @@ const LOGIN_METHODS = {
   GITHUB_GOOGLE: 'GitHub/Google',
 };
 
+const SUPPORTED_DATABASE_CONNECTORS = ['postgres', 'mysql', 'mssql'];
+
 module.exports = {
   PROJECT_GENERAL_ACCESS_TYPE,
   PROJECT_SHARING_TEXT,
   FLAG_HELP_GROUP,
   LOGIN_METHODS,
+  SUPPORTED_DATABASE_CONNECTORS,
 };

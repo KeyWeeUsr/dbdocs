@@ -23,7 +23,7 @@ class ValidateCommand extends Command {
       spinner.succeed('Done. Parse succeeded without errors.');
     } catch (error) {
       const rawMessage = formatParserV2ErrorMessage(error);
-      const message = rawMessage ? `You have syntax error(s) in ${path.basename(filepath)}\n${rawMessage}` : rawMessage;
+      const message = rawMessage ? `You have syntax error(s) in ${path.basename(filepath)}\n${rawMessage}` : error.message;
 
       if (spinner.isSpinning) {
         spinner.fail(`Failed: ${message}`);

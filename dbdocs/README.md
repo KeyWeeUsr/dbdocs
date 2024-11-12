@@ -29,6 +29,7 @@ USAGE
 # Commands
 <!-- commands -->
 * [`dbdocs build [FILEPATH]`](#dbdocs-build-filepath)
+* [`dbdocs db2dbml [FORMAT] [CONNECTION-STRING`](#dbdocs-db2dbml-format-connection-string)
 * [`dbdocs help [COMMAND]`](#dbdocs-help-command)
 * [`dbdocs login`](#dbdocs-login)
 * [`dbdocs logout`](#dbdocs-logout)
@@ -53,6 +54,29 @@ ARGUMENTS
 OPTIONS
   -p, --password=password  password for project
   --project=project        project name
+```
+
+## `dbdocs db2dbml [FORMAT] [CONNECTION-STRING]`
+
+Generate DBML directly from a database
+
+```bash
+USAGE
+  $ dbdocs db2dbml [FORMAT] [CONNECTION-STRING] [-o <value>]
+
+ARGUMENTS
+  FORMAT             your database format (postgres, mysql, mssql)
+  CONNECTION-STRING  your database connection string:
+                     - postgres: postgresql://user:password@localhost:5432/dbname
+                     - mysql: mysql://user:password@localhost:3306/dbname
+                     - mssql: 'Server=localhost,1433;Database=master;User Id=sa;Password=your_password;Encrypt=true;TrustServerCertificate=true;'
+
+FLAGS
+  -o, --outFile=/path-to-your-file  output file path
+
+DESCRIPTION
+  Generate DBML directly from a database
+
 ```
 
 ## `dbdocs help [COMMAND]`

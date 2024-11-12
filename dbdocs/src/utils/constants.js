@@ -38,6 +38,11 @@ const WINDOW_FILE_PATH_REGEX = /^[a-zA-Z]:[\\/](?:[^<>:"/\\|?*\n\r]+[\\/])*[^<>:
  */
 const UNIX_FILE_PATH_REGEX = /^(\/|\.\/|~\/|\.\.\/)([^<>:"|?*\n\r]*\/?)*[^<>:"|?*\n\r]*$/;
 
+const HOST_CONFIG_STATUS = {
+  active: 'active',
+  inactive: 'inactive',
+};
+
 module.exports = {
   PROJECT_GENERAL_ACCESS_TYPE,
   PROJECT_SHARING_TEXT,
@@ -46,4 +51,5 @@ module.exports = {
   SUPPORTED_DATABASE_CONNECTORS,
   WINDOW_FILE_PATH_REGEX,
   UNIX_FILE_PATH_REGEX,
+  HOST_CONFIG_STATUS,
 };

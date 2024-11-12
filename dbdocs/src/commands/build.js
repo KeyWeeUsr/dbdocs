@@ -120,6 +120,7 @@ class BuildCommand extends Command {
         if (err.response) {
           const { error } = err.response.data;
           if (error.name === 'SyntaxError') {
+            // eslint-disable-next-line max-len
             message = `You have syntax error(s) in ${path.basename(filepath)} line ${error.location.start.line} column ${error.location.start.column}. ${error.message}`;
           } else if (error.name === 'AccessDenied') {
             message = error.message;

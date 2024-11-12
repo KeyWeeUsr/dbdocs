@@ -36,6 +36,7 @@ USAGE
 * [`dbdocs password`](#dbdocs-password)
 * [`dbdocs remove [PROJECT_NAME]`](#dbdocs-remove-project_name)
 * [`dbdocs rename`](#dbdocs-rename)
+* [`dbdocs set`](#dbdocs-set)
 * [`dbdocs token`](#dbdocs-token)
 * [`dbdocs validate [FILEPATH]`](#dbdocs-validate-filepath)
 
@@ -182,6 +183,25 @@ USAGE
 
 DESCRIPTION
   change your username and your default organization name
+```
+
+## `dbdocs set`
+
+Set the Web URL and API URL of dbdocs self-hosted server
+
+```bash
+USAGE
+  $ dbdocs set --webUrl <value> --apiUrl <value>
+
+FLAGS
+  --apiUrl=<value>  (required) Self-hosted api url
+  --webUrl=<value>  (required) Self-hosted web url
+
+DESCRIPTION
+  Set the Web URL and API URL of dbdocs self-hosted server
+
+EXAMPLES
+  $ dbdocs set --webUrl http://webserver.dev --apiUrl http://apiserver.dev
 ```
 
 ## `dbdocs token`

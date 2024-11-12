@@ -10,14 +10,7 @@ const verifyToken = require('../utils/verifyToken');
 const { getOrg } = require('../utils/org');
 const { shouldAskForFeedback } = require('../utils/feedback');
 const { isValidName } = require('../validators/projectName');
-
-async function validate (content) {
-  const res = await axios.post(`${vars.apiUrl}/parse`, {
-    content,
-  });
-
-  return res.data.model;
-}
+const parse = require('../utils/parse');
 
 async function build (project, authConfig) {
   const res = await axios.post(`${vars.apiUrl}/projects`, project, authConfig);
@@ -57,20 +50,16 @@ class BuildCommand extends Command {
       // validate dbml syntax, get project name if it's already defined in the file
       spinner.text = 'Parsing file content';
       spinner.start();
+      let model = null;
       try {
-        const model = await validate(content);
+        model = await parse(content);
         if (!project) {
-          project = model.database['1'].name;
+          project = model.name;
         }
         spinner.succeed('Parsing file content');
-      } catch (err) {
-        let message = err.message || 'Something wrong :( Please try again.';
-        if (err.response) {
-          const { error } = err.response.data;
-          if (error.name === 'SyntaxError') {
-            message = `You have syntax error in ${path.basename(filepath)} line ${error.location.start.line} column ${error.location.start.column}. ${error.message}`;
-          }
-        }
+      } catch (error) {
+        if (!error.location) throw error;
+        const message = `You have syntax error in ${path.basename(filepath)} line ${error.location.start.line} column ${error.location.start.column}. ${error.message}`;
         throw new Error(message);
       }
 
@@ -95,6 +84,7 @@ class BuildCommand extends Command {
           doc: {
             content,
           },
+          shallowSchema: model.schemas,
         }, authConfig);
         if (!newProject.isPublic) {
           if (isCreated || password) {

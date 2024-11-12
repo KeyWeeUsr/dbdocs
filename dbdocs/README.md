@@ -19,7 +19,7 @@ $ npm install -g dbdocs
 $ dbdocs COMMAND
 running command...
 $ dbdocs (-v|--version|version)
-dbdocs/0.6.1 darwin-x64 node-v15.10.0
+dbdocs/0.6.2 darwin-x64 node-v15.10.0
 $ dbdocs --help [COMMAND]
 USAGE
   $ dbdocs COMMAND
@@ -36,6 +36,7 @@ USAGE
 * [`dbdocs password`](#dbdocs-password)
 * [`dbdocs remove [PROJECT_NAME]`](#dbdocs-remove-project_name)
 * [`dbdocs token`](#dbdocs-token)
+* [`dbdocs validate [FILEPATH]`](#dbdocs-validate-filepath)
 
 ## `dbdocs build [FILEPATH]`
 
@@ -140,5 +141,17 @@ USAGE
 OPTIONS
   -g, --generate  generate authentication token
   -r, --revoke    revoke authentication token
+```
+
+## `dbdocs validate [FILEPATH]`
+
+validate docs content
+
+```
+USAGE
+  $ dbdocs validate [FILEPATH]
+
+ARGUMENTS
+  FILEPATH  dbml file path
 ```
 <!-- commandsstop -->

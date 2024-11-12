@@ -1,5 +1,4 @@
-const { Command } = require('@oclif/command');
-const { cli } = require('cli-ux');
+const { Command, CliUx } = require('@oclif/core');
 const chalk = require('chalk');
 const { vars } = require('../vars');
 const verifyToken = require('../utils/verifyToken');
@@ -23,7 +22,7 @@ class LsCommand extends Command {
         ];
       }, [3, 12]);
 
-      cli.table(projects, {
+      CliUx.ux.table(projects, {
         name: {
           minWidth: 20,
         },
@@ -43,7 +42,7 @@ class LsCommand extends Command {
           get: (project) => (new Date(project.updatedAt)).toLocaleString(),
         },
       }, {
-        printLine: this.log,
+        printLine: this.log.bind(this),
       });
     } catch (err) {
       this.error(err);

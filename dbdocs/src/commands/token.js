@@ -1,4 +1,4 @@
-const { Command, flags } = require('@oclif/command');
+const { Command, Flags } = require('@oclif/core');
 const ora = require('ora');
 const axios = require('axios');
 const { vars } = require('../vars');
@@ -7,7 +7,7 @@ const verifyToken = require('../utils/verifyToken');
 class TokenCommand extends Command {
   async run () {
     const spinner = ora({});
-    const { flags: { generate, revoke } } = this.parse(TokenCommand);
+    const { flags: { generate, revoke } } = await this.parse(TokenCommand);
     if (!generate && !revoke) {
       this.error('Please specify an action, type "dbdocs token --help" to see processable actitons.');
     }
@@ -56,12 +56,12 @@ class TokenCommand extends Command {
 
 TokenCommand.description = 'generate or revoke your authentication token';
 TokenCommand.flags = {
-  generate: flags.boolean({
+  generate: Flags.boolean({
     char: 'g',
     description: 'generate authentication token',
     default: false,
   }),
-  revoke: flags.boolean({
+  revoke: Flags.boolean({
     char: 'r',
     description: 'revoke authentication token',
     default: false,

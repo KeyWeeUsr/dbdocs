@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-const { Command } = require('@oclif/command');
+const { Command } = require('@oclif/core');
 const axios = require('axios');
 const inquirer = require('inquirer');
 const ora = require('ora');
@@ -21,7 +21,7 @@ class RemoveCommand extends Command {
       const authConfig = await verifyToken();
       const org = await getOrg(authConfig);
 
-      const { args } = this.parse(RemoveCommand);
+      const { args } = await this.parse(RemoveCommand);
       let { project_name } = args;
       if (!project_name) {
         const answer = await inquirer.prompt([

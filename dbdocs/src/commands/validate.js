@@ -1,4 +1,4 @@
-const { Command, flags } = require('@oclif/command');
+const { Command } = require('@oclif/core');
 const fs = require('fs');
 const path = require('path');
 const ora = require('ora');
@@ -9,7 +9,7 @@ class ValidateCommand extends Command {
     const spinner = ora({});
     let filepath = null;
     try {
-      const { args } = this.parse(ValidateCommand);
+      const { args } = await this.parse(ValidateCommand);
       filepath = args.filepath;
       let content = '';
       content = fs.readFileSync(path.resolve(process.cwd(), filepath), 'utf-8');

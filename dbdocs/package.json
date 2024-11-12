@@ -1,18 +1,16 @@
 {
   "name": "dbdocs",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "author": "@holistics",
   "bin": {
     "dbdocs": "./bin/run"
   },
   "dependencies": {
     "@dbml/core": "^2.4.2",
-    "@oclif/command": "^1",
-    "@oclif/config": "^1",
-    "@oclif/plugin-help": "^2",
-    "axios": "^0.19.0",
+    "@oclif/core": "1.12.1",
+    "@oclif/plugin-help": "5.1.12",
+    "axios": "0.27.2",
     "chalk": "^3.0.0",
-    "cli-ux": "^5.6.3",
     "dotenv": "^8.2.0",
     "inquirer": "^7.0.1",
     "netrc-parser": "^3.1.6",
@@ -21,15 +19,15 @@
     "update-notifier": "^4.1.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1",
-    "@oclif/test": "^1",
+    "@oclif/test": "2.1.1",
     "chai": "^4",
     "globby": "^10",
     "mocha": "^5",
-    "nyc": "^14"
+    "nyc": "^14",
+    "oclif": "^3.2.0"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=14.0.0"
   },
   "files": [
     "/bin",
@@ -43,6 +41,8 @@
   "license": "MIT",
   "main": "src/index.js",
   "oclif": {
+    "additionalHelpFlags": ["help"],
+    "additionalVersionFlags": ["version"],
     "commands": "./src/commands",
     "bin": "dbdocs",
     "plugins": [
@@ -53,7 +53,7 @@
         "./src/hooks/init/checkUpdate",
         "./src/hooks/init/loadEnv"
       ],
-      "prerun":[
+      "prerun": [
         "./src/hooks/prerun/checkVersion"
       ]
     }
@@ -61,8 +61,8 @@
   "repository": "holistics/dbdocs",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "oclif-dev manifest",
+    "prepack": "oclif manifest",
     "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif readme && git add README.md"
   }
 }

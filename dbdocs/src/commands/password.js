@@ -1,4 +1,4 @@
-const { Command, flags } = require('@oclif/command');
+const { Command, Flags } = require('@oclif/core');
 const axios = require('axios');
 const inquirer = require('inquirer');
 const ora = require('ora');
@@ -24,7 +24,7 @@ class PasswordCommand extends Command {
   async run () {
     const spinner = ora({});
     try {
-      let { flags: { project, set, remove } } = this.parse(PasswordCommand);
+      let { flags: { project, set, remove } } = await this.parse(PasswordCommand);
 
       if (set && remove) {
         throw new Error('You must choose one, set password or remove.');
@@ -102,9 +102,9 @@ class PasswordCommand extends Command {
 PasswordCommand.description = 'set password for your project or remove password';
 
 PasswordCommand.flags = {
-  project: flags.string({ char: 'p', description: 'project name', helpValue: 'project name' }),
-  set: flags.string({ char: 's', description: 'password for your project', helpValue: 'password' }),
-  remove: flags.boolean({ char: 'r', description: 'remove password from your project' }),
+  project: Flags.string({ char: 'p', description: 'project name', helpValue: 'project name' }),
+  set: Flags.string({ char: 's', description: 'password for your project', helpValue: 'password' }),
+  remove: Flags.boolean({ char: 'r', description: 'remove password from your project' }),
 };
 
 module.exports = PasswordCommand;

@@ -1,4 +1,4 @@
-const { Command } = require('@oclif/command');
+const { Command } = require('@oclif/core');
 const netrc = require('netrc-parser').default;
 const { vars } = require('../vars');
 

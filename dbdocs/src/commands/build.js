@@ -1,4 +1,4 @@
-const { Command, flags } = require('@oclif/command');
+const { Command, Flags } = require('@oclif/core');
 const axios = require('axios');
 const inquirer = require('inquirer');
 const fs = require('fs');
@@ -37,8 +37,8 @@ class BuildCommand extends Command {
     try {
       const authConfig = await verifyToken();
 
-      let { flags: { project, password } } = this.parse(BuildCommand);
-      const { args } = this.parse(BuildCommand);
+      let { flags: { project, password } } = await this.parse(BuildCommand);
+      const { args } = await this.parse(BuildCommand);
 
       const { filepath } = args;
       let content = '';
@@ -137,8 +137,8 @@ class BuildCommand extends Command {
 BuildCommand.description = 'build docs';
 
 BuildCommand.flags = {
-  project: flags.string({ description: 'project name' }),
-  password: flags.string({ char: 'p', description: 'password for project' }),
+  project: Flags.string({ description: 'project name' }),
+  password: Flags.string({ char: 'p', description: 'password for project' }),
 };
 
 BuildCommand.args = [

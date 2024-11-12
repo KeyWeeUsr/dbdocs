@@ -14,8 +14,14 @@ const FLAG_HELP_GROUP = {
   sharing: 'sharing',
 };
 
+const LOGIN_METHODS = {
+  EMAIL: 'Email',
+  GITHUB_GOOGLE: 'GitHub/Google',
+};
+
 module.exports = {
   PROJECT_GENERAL_ACCESS_TYPE,
   PROJECT_SHARING_TEXT,
   FLAG_HELP_GROUP,
+  LOGIN_METHODS,
 };

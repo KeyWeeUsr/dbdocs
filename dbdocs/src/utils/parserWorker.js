@@ -11,6 +11,7 @@ function parse (content) {
   });
   return {
     name: databaseObject.name,
+    description: databaseObject.note,
     schemas,
   };
 }

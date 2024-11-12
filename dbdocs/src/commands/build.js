@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const ora = require('ora');
 const chalk = require('chalk');
+const removeMd = require('remove-markdown');
 const { vars } = require('../vars');
 const verifyToken = require('../utils/verifyToken');
 const { getOrg } = require('../utils/org');
@@ -83,6 +84,7 @@ class BuildCommand extends Command {
         const isPublic = getIsPublicValueFromBuildFlag(publicFlag, privateFlag, password);
         const { newProject } = await build({
           projectName: project,
+          description: removeMd(model.description),
           isPublic,
           password,
           orgName: org,

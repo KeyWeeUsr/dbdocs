@@ -7,6 +7,7 @@ const netrc = require('netrc-parser').default;
 const { vars } = require('../vars');
 const { isValidEmail } = require('../validators/email');
 const { isValidOtp } = require('../validators/otp');
+const { LOGIN_METHODS } = require('../utils/constants');
 
 async function askForOtp (spinner, shortLivedToken, email) {
   const cliSpinner = spinner;
@@ -77,8 +78,8 @@ class LoginCommand extends Command {
           type: 'rawlist',
           message: 'Choose a login method:',
           choices: [
-            { name: 'Email', value: 'Email' },
-            { name: 'GitHub', value: 'GitHub' },
+            { name: 'Email', value: LOGIN_METHODS.EMAIL },
+            { name: 'GitHub/Google', value: LOGIN_METHODS.GITHUB_GOOGLE },
           ],
           name: 'loginMethod',
         },
@@ -86,14 +87,9 @@ class LoginCommand extends Command {
 
       const { loginMethod } = loginMethodAnswer;
 
-      const loginMethods = {
-        EMAIL: 'Email',
-        GITHUB: 'GitHub',
-      };
-
       let authToken;
 
-      if (loginMethod === loginMethods.EMAIL) {
+      if (loginMethod === LOGIN_METHODS.EMAIL) {
         authToken = await loginViaEmail(spinner);
       } else {
         await open(`${vars.hostUrl}/login/cli`, { wait: false });

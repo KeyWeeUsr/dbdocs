@@ -19,12 +19,8 @@ async function validate (content) {
   return res.data.model;
 }
 
-async function build (project, authToken) {
-  const res = await axios.post(`${vars.apiUrl}/projects`, project, {
-    headers: {
-      Authorization: authToken,
-    },
-  });
+async function build (project, authConfig) {
+  const res = await axios.post(`${vars.apiUrl}/projects`, project, authConfig);
   if (![200, 201].includes(res.status)) {
     throw new Error('Something wrong :( Please try again.');
   }
@@ -46,7 +42,7 @@ class BuildCommand extends Command {
     const spinner = ora({});
 
     try {
-      const authToken = await verifyToken();
+      const authConfig = await verifyToken();
 
       let { flags: { project, password } } = this.parse(BuildCommand);
       const { args } = this.parse(BuildCommand);
@@ -55,7 +51,7 @@ class BuildCommand extends Command {
       let content = '';
       content = fs.readFileSync(path.resolve(process.cwd(), filepath), 'utf-8');
 
-      const userOrg = await getOrg(authToken);
+      const userOrg = await getOrg(authConfig);
       const org = userOrg.name;
 
       // validate dbml syntax, get project name if it's already defined in the file
@@ -99,7 +95,7 @@ class BuildCommand extends Command {
           doc: {
             content,
           },
-        }, authToken);
+        }, authConfig);
         if (!newProject.isPublic) {
           if (isCreated || password) {
             spinner.succeed(`Password is set for '${newProject.name}'`);

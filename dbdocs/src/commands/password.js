@@ -6,26 +6,18 @@ const { vars } = require('../vars');
 const verifyToken = require('../utils/verifyToken');
 const { getOrg } = require('../utils/org');
 
-const removePassword = async (projectName, org, authToken) => {
+const removePassword = async (projectName, org, authConfig) => {
   await axios.delete(`${vars.apiUrl}/projects/${projectName}/password`, {
-    headers: {
-      Authorization: authToken,
-    },
-    data: {
-      org,
-    },
+    ...authConfig,
+    data: org,
   });
 };
 
-const updatePassword = async (projectName, org, password, authToken) => {
+const updatePassword = async (projectName, org, password, authConfig) => {
   await axios.put(`${vars.apiUrl}/projects/${projectName}/password`, {
     org,
     password,
-  }, {
-    headers: {
-      Authorization: authToken,
-    },
-  });
+  }, authConfig);
 };
 
 class PasswordCommand extends Command {
@@ -37,8 +29,8 @@ class PasswordCommand extends Command {
       if (set && remove) {
         throw new Error('You must choose one, set password or remove.');
       }
-      const authToken = await verifyToken();
-      const org = await getOrg(authToken);
+      const authConfig = await verifyToken();
+      const org = await getOrg(authConfig);
 
       if (!project) {
         const answer = await inquirer.prompt([
@@ -73,11 +65,11 @@ class PasswordCommand extends Command {
 
       if (remove) {
         spinner.start('Removing password');
-        await removePassword(project, org, authToken);
+        await removePassword(project, org, authConfig);
         spinner.warn(`Password is removed from '${project}'.`);
       } else if (set) {
         spinner.start('Setting password');
-        await updatePassword(project, org, set, authToken);
+        await updatePassword(project, org, set, authConfig);
         spinner.succeed(`Password is set for '${project}'.`);
       }
     } catch (err) {

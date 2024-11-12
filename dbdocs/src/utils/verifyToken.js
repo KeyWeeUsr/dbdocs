@@ -6,16 +6,26 @@ const verifyToken = async () => {
   const { apiHost } = vars;
   await netrc.load();
   const previousEntry = netrc.machines[apiHost];
-  if (!previousEntry || !previousEntry.password) {
+  const dbdocsToken = process.env.DBDOCS_TOKEN;
+  const isNotAuthenticated = (!previousEntry || !previousEntry.password) && !dbdocsToken;
+  if (isNotAuthenticated) {
     throw new Error('Please login first.');
   }
-  const authToken = netrc.machines[apiHost].password;
-  await axios.get(`${vars.apiUrl}/account`, {
+  const authToken = dbdocsToken || netrc.machines[apiHost].password;
+  const configuration = {
     headers: {
       Authorization: authToken,
+      'Authorization-Method': dbdocsToken ? 'dbdocs-token' : 'login',
     },
-  });
-  return authToken;
+  };
+  await axios.get(`${vars.apiUrl}/account`, configuration)
+    .catch((error) => {
+      if (error.response && error.response.data.error.name === 'InvalidDbdocsToken') {
+        throw new Error('Your DBDOCS_TOKEN is invalid, please setup a new one or remove it then login again.');
+      }
+      throw new Error('Invalid token. Please login again and/or check your DBDOCS_TOKEN.');
+    });
+  return configuration;
 };
 
 module.exports = verifyToken;

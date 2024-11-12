@@ -7,14 +7,10 @@ const { vars } = require('../vars');
 const verifyToken = require('../utils/verifyToken');
 const { getOrg } = require('../utils/org');
 
-const remove = async (projectName, org, authToken) => {
+const remove = async (projectName, org, authConfig) => {
   await axios.delete(`${vars.apiUrl}/projects/${projectName}`, {
-    headers: {
-      Authorization: authToken,
-    },
-    data: {
-      org,
-    },
+    ...authConfig,
+    data: org,
   });
 };
 
@@ -22,8 +18,8 @@ class RemoveCommand extends Command {
   async run () {
     const spinner = ora({});
     try {
-      const authToken = await verifyToken();
-      const org = await getOrg(authToken);
+      const authConfig = await verifyToken();
+      const org = await getOrg(authConfig);
 
       const { args } = this.parse(RemoveCommand);
       let { project_name } = args;
@@ -40,7 +36,7 @@ class RemoveCommand extends Command {
       spinner.text = 'Removing project';
       spinner.start();
 
-      await remove(project_name, org, authToken);
+      await remove(project_name, org, authConfig);
 
       spinner.succeed('Removed successfully');
     } catch (err) {

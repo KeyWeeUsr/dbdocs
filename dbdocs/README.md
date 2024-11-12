@@ -19,7 +19,7 @@ $ npm install -g dbdocs
 $ dbdocs COMMAND
 running command...
 $ dbdocs (-v|--version|version)
-dbdocs/0.3.1 linux-x64 node-v12.16.1
+dbdocs/0.5.0 darwin-x64 node-v15.10.0
 $ dbdocs --help [COMMAND]
 USAGE
   $ dbdocs COMMAND
@@ -34,6 +34,7 @@ USAGE
 * [`dbdocs logout`](#dbdocs-logout)
 * [`dbdocs password`](#dbdocs-password)
 * [`dbdocs remove [PROJECT_NAME]`](#dbdocs-remove-project_name)
+* [`dbdocs token`](#dbdocs-token)
 
 ## `dbdocs build [FILEPATH]`
 
@@ -51,8 +52,6 @@ OPTIONS
   --project=project        project name
 ```
 
-_See code: [src/commands/build.js](https://github.com/holistics/dbdocs/blob/v0.3.1/src/commands/build.js)_
-
 ## `dbdocs help [COMMAND]`
 
 display help for dbdocs
@@ -68,8 +67,6 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
-
 ## `dbdocs login`
 
 login to dbdocs
@@ -82,8 +79,6 @@ DESCRIPTION
   login with your dbdocs credentials
 ```
 
-_See code: [src/commands/login.js](https://github.com/holistics/dbdocs/blob/v0.3.1/src/commands/login.js)_
-
 ## `dbdocs logout`
 
 logout
@@ -95,8 +90,6 @@ USAGE
 DESCRIPTION
   clears local login credentials
 ```
-
-_See code: [src/commands/logout.js](https://github.com/holistics/dbdocs/blob/v0.3.1/src/commands/logout.js)_
 
 ## `dbdocs password`
 
@@ -112,8 +105,6 @@ OPTIONS
   -s, --set=password          password for your project
 ```
 
-_See code: [src/commands/password.js](https://github.com/holistics/dbdocs/blob/v0.3.1/src/commands/password.js)_
-
 ## `dbdocs remove [PROJECT_NAME]`
 
 remove docs
@@ -125,6 +116,16 @@ USAGE
 ARGUMENTS
   PROJECT_NAME  name of the project which you want to remove
 ```
+## `dbdocs token`
 
-_See code: [src/commands/remove.js](https://github.com/holistics/dbdocs/blob/v0.3.1/src/commands/remove.js)_
+generate or revoke your authentication token
+
+```
+USAGE
+  $ dbdocs token
+
+OPTIONS
+  -g, --generate  generate authentication token
+  -r, --revoke    revoke authentication token
+```
 <!-- commandsstop -->

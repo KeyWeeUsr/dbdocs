@@ -5,25 +5,114 @@ const axios = require('axios');
 const ora = require('ora');
 const netrc = require('netrc-parser').default;
 const { vars } = require('../vars');
+const { isValidEmail } = require('../validators/email');
+const { isValidOtp } = require('../validators/otp');
+
+async function askForOtp (spinner, shortLivedToken, email) {
+  const cliSpinner = spinner;
+  const otpAnswer = await inquirer.prompt([
+    {
+      message: 'Please input OTP code sent to the email:',
+      name: 'otp',
+      validate: (otp) => (isValidOtp(otp) ? true : 'OTP invalid, please try again'),
+    },
+  ]);
+
+  const { otp } = otpAnswer;
+
+  cliSpinner.text = 'Login to your account';
+  cliSpinner.start();
+  const { data: { token } } = await axios.post(
+    `${vars.apiUrl}/auth`,
+    {
+      params: {
+        authCode: otp,
+        provider: 'email',
+        shortLivedToken,
+        loginEmail: email,
+      },
+    },
+  );
+  cliSpinner.succeed();
+
+  return token;
+}
+
+async function loginViaEmail (spinner) {
+  const cliSpinner = spinner;
+  const emailAnswer = await inquirer.prompt([
+    {
+      message: 'Your email:',
+      name: 'email',
+      validate: (email) => (isValidEmail(email) ? true : 'Email invalid, please try again'),
+    },
+  ]);
+
+  const { email } = emailAnswer;
+
+  cliSpinner.text = 'Request email authentication';
+  cliSpinner.start();
+  const { data: { shortLivedToken } } = await axios.post(
+    `${vars.apiUrl}/auth/email`,
+    {
+      params: {
+        email,
+      },
+    },
+  );
+  cliSpinner.succeed();
+
+  // TODO: allow user to retry input the OTP
+  const token = await askForOtp(spinner, shortLivedToken, email);
+
+  return token;
+}
 
 class LoginCommand extends Command {
   async run () {
     const spinner = ora({});
     try {
-      await open(`${vars.hostUrl}/login/cli`, { wait: false });
-      const answer = await inquirer.prompt([
+      const loginMethodAnswer = await inquirer.prompt([
         {
-          message: 'Please input your authentication token: ',
-          name: 'authToken',
+          type: 'rawlist',
+          message: 'Choose a login method:',
+          choices: [
+            { name: 'Email', value: 'Email' },
+            { name: 'GitHub', value: 'GitHub' },
+          ],
+          name: 'loginMethod',
         },
       ]);
 
+      const { loginMethod } = loginMethodAnswer;
+
+      const loginMethods = {
+        EMAIL: 'Email',
+        GITHUB: 'GitHub',
+      };
+
+      let authToken;
+
+      if (loginMethod === loginMethods.EMAIL) {
+        authToken = await loginViaEmail(spinner);
+      } else {
+        await open(`${vars.hostUrl}/login/cli`, { wait: false });
+        const answer = await inquirer.prompt([
+          {
+            message: 'Please input your authentication token: ',
+            name: 'authToken',
+          },
+        ]);
+
+        authToken = answer.authToken;
+      }
+
       spinner.text = 'Validate token';
       spinner.start();
-      const { authToken } = answer;
       const { data: { account } } = await axios.get(`${vars.apiUrl}/account`, {
         headers: {
           Authorization: authToken,
+          'Authorization-Method': 'login',
         },
       });
       spinner.succeed();
@@ -56,6 +145,18 @@ class LoginCommand extends Command {
 
           case 'InvalidAuthToken':
             message = 'Invalid token. Please login again.';
+            break;
+
+          case 'OtpInvalidError':
+            message = 'Invalid OTP. Please login again.';
+            break;
+
+          case 'OtpUsedError':
+            message = 'OTP used recently. Please login again after couple minutes.';
+            break;
+
+          case 'EmailDeliveryFailedError':
+            message = 'Email delivery failed. Please login again.';
             break;
 
           default:

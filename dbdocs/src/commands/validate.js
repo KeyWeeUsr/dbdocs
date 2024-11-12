@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const ora = require('ora');
 const parse = require('../utils/parse');
+const { formatParserV2ErrorMessage } = require('../utils/error-formatter');
 
 class ValidateCommand extends Command {
   async run () {
@@ -21,13 +22,14 @@ class ValidateCommand extends Command {
       spinner.succeed('Validating file content');
       spinner.succeed('Done. Parse succeeded without errors.');
     } catch (error) {
-      let message = error.message || 'Something wrong :( Please try again.';
-      if (filepath && error.location) message = `You have syntax error in ${path.basename(filepath)} line ${error.location.start.line} column ${error.location.start.column}. ${error.message}`;
+      const rawMessage = formatParserV2ErrorMessage(error);
+      const message = rawMessage ? `You have syntax error(s) in ${path.basename(filepath)}\n${rawMessage}` : rawMessage;
+
       if (spinner.isSpinning) {
         spinner.fail(`Failed: ${message}`);
-      } else {
-        this.error(message);
+        return;
       }
+      this.error(message);
     }
   }
 }

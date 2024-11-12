@@ -1,14 +1,14 @@
-const { parentPort, workerData } = require("worker_threads");
-const { Parser } = require("@dbml/core");
+const { parentPort, workerData } = require('worker_threads');
+const { Parser } = require('@dbml/core');
 
 function parse (content) {
-  const databaseObject = Parser.parse(content, 'dbml');
-  const schemas = databaseObject.schemas.map((schema) => {
-    return {
-      name: schema.name,
-      tables: schema.tables.map((table) => table.name),
-    };
-  });
+  const parser = new Parser();
+  const databaseObject = parser.parse(content, 'dbmlv2');
+  const schemas = databaseObject.schemas.map((schema) => ({
+    name: schema.name,
+    tables: schema.tables.map((table) => table.name),
+  }));
+
   return {
     name: databaseObject.name,
     description: databaseObject.note,

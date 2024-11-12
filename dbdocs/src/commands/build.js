@@ -15,6 +15,7 @@ const parse = require('../utils/parse');
 const { PROJECT_GENERAL_ACCESS_TYPE, FLAG_HELP_GROUP } = require('../utils/constants');
 const { getProjectUrl } = require('../utils/helper');
 const { getIsPublicValueFromBuildFlag } = require('../utils/helper');
+const { formatParserV2ErrorMessage } = require('../utils/error-formatter');
 
 async function build (project, authConfig) {
   const res = await axios.post(`${vars.apiUrl}/projects`, project, authConfig);
@@ -62,8 +63,8 @@ class BuildCommand extends Command {
         }
         spinner.succeed('Parsing file content');
       } catch (error) {
-        if (!error.location) throw error;
-        const message = `You have syntax error in ${path.basename(filepath)} line ${error.location.start.line} column ${error.location.start.column}. ${error.message}`;
+        const rawMessage = formatParserV2ErrorMessage(error);
+        const message = rawMessage ? `You have syntax error(s) in ${path.basename(filepath)}\n${rawMessage}` : 'Something wrong :( Please try again.';
         throw new Error(message);
       }
 
@@ -116,7 +117,7 @@ class BuildCommand extends Command {
         if (err.response) {
           const { error } = err.response.data;
           if (error.name === 'SyntaxError') {
-            message = `You have syntax error in ${path.basename(filepath)} line ${error.location.start.line} column ${error.location.start.column}. ${error.message}`;
+            message = `You have syntax error(s) in ${path.basename(filepath)} line ${error.location.start.line} column ${error.location.start.column}. ${error.message}`;
           } else if (error.name === 'AccessDenied') {
             message = error.message;
           }

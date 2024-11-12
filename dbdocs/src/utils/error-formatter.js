@@ -3,18 +3,14 @@ function createSyntaxErrorMessage (line, column, msg) {
 }
 
 function formatParserV2ErrorMessage (error) {
-  if (!Array.isArray(error)) {
-    if (!error.location) {
-      // this is a runtime error
-      return '';
-    }
-
-    return createSyntaxErrorMessage(error.location.start.line, error.location.start.column, error.message);
+  if (!error.diags) {
+    // this is a runtime error
+    return '';
   }
 
   const messageList = [];
-  error.forEach((err) => {
-    messageList.push(createSyntaxErrorMessage(err.location.start.line, err.location.start.column, err.message));
+  error.diags.forEach((diag) => {
+    messageList.push(createSyntaxErrorMessage(diag.location.start.line, diag.location.start.column, diag.message));
   });
 
   return messageList.join('\n');

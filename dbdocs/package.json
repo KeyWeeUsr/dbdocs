@@ -1,6 +1,6 @@
 {
   "name": "dbdocs",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "author": "@holistics",
   "bin": {
     "dbdocs": "./bin/run"
@@ -11,6 +11,7 @@
     "@oclif/plugin-help": "^2",
     "axios": "^0.19.0",
     "chalk": "^3.0.0",
+    "cli-ux": "^5.6.3",
     "dotenv": "^8.2.0",
     "inquirer": "^7.0.1",
     "netrc-parser": "^3.1.6",

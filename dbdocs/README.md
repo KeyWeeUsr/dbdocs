@@ -19,7 +19,7 @@ $ npm install -g dbdocs
 $ dbdocs COMMAND
 running command...
 $ dbdocs (-v|--version|version)
-dbdocs/0.5.0 darwin-x64 node-v15.10.0
+dbdocs/0.6.0 darwin-x64 node-v15.10.0
 $ dbdocs --help [COMMAND]
 USAGE
   $ dbdocs COMMAND
@@ -32,6 +32,7 @@ USAGE
 * [`dbdocs help [COMMAND]`](#dbdocs-help-command)
 * [`dbdocs login`](#dbdocs-login)
 * [`dbdocs logout`](#dbdocs-logout)
+* [`dbdocs ls`](#dbdocs-ls)
 * [`dbdocs password`](#dbdocs-password)
 * [`dbdocs remove [PROJECT_NAME]`](#dbdocs-remove-project_name)
 * [`dbdocs token`](#dbdocs-token)
@@ -89,6 +90,18 @@ USAGE
 
 DESCRIPTION
   clears local login credentials
+```
+
+## `dbdocs ls`
+
+list projects
+
+```
+USAGE
+  $ dbdocs ls
+
+DESCRIPTION
+  list all projects in your default organization
 ```
 
 ## `dbdocs password`

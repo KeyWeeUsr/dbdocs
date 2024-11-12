@@ -116,6 +116,8 @@ class BuildCommand extends Command {
           const { error } = err.response.data;
           if (error.name === 'SyntaxError') {
             message = `You have syntax error in ${path.basename(filepath)} line ${error.location.start.line} column ${error.location.start.column}. ${error.message}`;
+          } else if (error.name === 'AccessDenied') {
+            message = error.message;
           }
         }
         throw new Error(message);

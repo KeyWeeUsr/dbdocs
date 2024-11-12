@@ -5,8 +5,9 @@ const fs = require('fs');
 const path = require('path');
 const ora = require('ora');
 const chalk = require('chalk');
-const netrc = require('netrc-parser').default;
 const { vars } = require('../vars');
+const verifyToken = require('../utils/verifyToken');
+const { getOrg } = require('../utils/org');
 
 async function validate (content) {
   const res = await axios.post(`${vars.apiUrl}/parse`, {
@@ -22,40 +23,19 @@ async function build (project, authToken) {
       Authorization: authToken,
     },
   });
-  if (res.status !== 201) {
+  if (![200, 201].includes(res.status)) {
     throw new Error('Something wrong :( Please try again.');
   }
-
-  return res.data.project;
-}
-
-async function getOrg (authToken) {
-  const { data: { orgs } } = await axios.get(`${vars.apiUrl}/orgs`, {
-    headers: {
-      Authorization: authToken,
-    },
-  });
-  return orgs[0];
+  return { newProject: res.data.project, isCreated: res.status === 201 };
 }
 
 class BuildCommand extends Command {
   async run () {
     const spinner = ora({});
     try {
-      const { apiHost } = vars;
-      await netrc.load();
-      const previousEntry = netrc.machines[apiHost];
-      if (!previousEntry || !previousEntry.password) {
-        throw new Error('Please login first.');
-      }
-      const authToken = netrc.machines[apiHost].password;
-      await axios.get(`${vars.apiUrl}/account`, {
-        headers: {
-          Authorization: authToken,
-        },
-      });
+      const authToken = await verifyToken();
 
-      let { flags: { project } } = this.parse(BuildCommand);
+      let { flags: { project, password } } = this.parse(BuildCommand);
       const { args } = this.parse(BuildCommand);
 
       const { filepath } = args;
@@ -70,7 +50,9 @@ class BuildCommand extends Command {
       spinner.start();
       try {
         const model = await validate(content);
-        project = model.database['1'].name;
+        if (!project) {
+          project = model.database['1'].name;
+        }
         spinner.succeed('Parsing file content');
       } catch (err) {
         let message = err.message || 'Something wrong :( Please try again.';
@@ -98,13 +80,21 @@ class BuildCommand extends Command {
       spinner.text = `Pushing new database to project ${project}`;
       spinner.start();
       try {
-        const newProject = await build({
+        const { newProject, isCreated } = await build({
           projectName: project,
+          password,
           orgName: org,
           doc: {
             content,
           },
         }, authToken);
+        if (!newProject.isPublic) {
+          if (isCreated || password) {
+            spinner.succeed(`Password is set for '${newProject.name}'`);
+          }
+        } else {
+          spinner.warn(`Password is not set for '${newProject.name}'`);
+        }
         spinner.succeed(`Done. Visit: ${chalk.cyan(`${vars.hostUrl}/${newProject.org.name}/${newProject.urlName}`)}`);
       } catch (err) {
         let message = err.message || 'Something wrong :( Please try again.';
@@ -146,7 +136,8 @@ class BuildCommand extends Command {
 BuildCommand.description = 'build docs';
 
 BuildCommand.flags = {
-  project: flags.string({ char: 'p', description: 'project name' }),
+  project: flags.string({ description: 'project name' }),
+  password: flags.string({ char: 'p', description: 'password for project' }),
 };
 
 BuildCommand.args = [

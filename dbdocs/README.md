@@ -19,7 +19,7 @@ $ npm install -g dbdocs
 $ dbdocs COMMAND
 running command...
 $ dbdocs (-v|--version|version)
-dbdocs/0.1.0 linux-x64 node-v12.14.1
+dbdocs/0.3.0 linux-x64 node-v12.14.1
 $ dbdocs --help [COMMAND]
 USAGE
   $ dbdocs COMMAND
@@ -32,6 +32,8 @@ USAGE
 * [`dbdocs help [COMMAND]`](#dbdocs-help-command)
 * [`dbdocs login`](#dbdocs-login)
 * [`dbdocs logout`](#dbdocs-logout)
+* [`dbdocs password`](#dbdocs-password)
+* [`dbdocs remove [PROJECT_NAME]`](#dbdocs-remove-project_name)
 
 ## `dbdocs build [FILEPATH]`
 
@@ -45,10 +47,11 @@ ARGUMENTS
   FILEPATH  dbml file path
 
 OPTIONS
-  -p, --project=project  project name
+  -p, --password=password  password for project
+  --project=project        project name
 ```
 
-_See code: [src/commands/build.js](https://github.com/holistics/dbdocs/blob/v0.1.0/src/commands/build.js)_
+_See code: [src/commands/build.js](https://github.com/holistics/dbdocs/blob/v0.3.0/src/commands/build.js)_
 
 ## `dbdocs help [COMMAND]`
 
@@ -79,7 +82,7 @@ DESCRIPTION
   login with your dbdocs credentials
 ```
 
-_See code: [src/commands/login.js](https://github.com/holistics/dbdocs/blob/v0.1.0/src/commands/login.js)_
+_See code: [src/commands/login.js](https://github.com/holistics/dbdocs/blob/v0.3.0/src/commands/login.js)_
 
 ## `dbdocs logout`
 
@@ -93,5 +96,35 @@ DESCRIPTION
   clears local login credentials
 ```
 
-_See code: [src/commands/logout.js](https://github.com/holistics/dbdocs/blob/v0.1.0/src/commands/logout.js)_
+_See code: [src/commands/logout.js](https://github.com/holistics/dbdocs/blob/v0.3.0/src/commands/logout.js)_
+
+## `dbdocs password`
+
+set password for your project or remove password
+
+```
+USAGE
+  $ dbdocs password
+
+OPTIONS
+  -p, --project=project name  project name
+  -r, --remove                remove password from your project
+  -s, --set=password          password for your project
+```
+
+_See code: [src/commands/password.js](https://github.com/holistics/dbdocs/blob/v0.3.0/src/commands/password.js)_
+
+## `dbdocs remove [PROJECT_NAME]`
+
+remove docs
+
+```
+USAGE
+  $ dbdocs remove [PROJECT_NAME]
+
+ARGUMENTS
+  PROJECT_NAME  name of the project which you want to remove
+```
+
+_See code: [src/commands/remove.js](https://github.com/holistics/dbdocs/blob/v0.3.0/src/commands/remove.js)_
 <!-- commandsstop -->

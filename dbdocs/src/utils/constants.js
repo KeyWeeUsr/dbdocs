@@ -5,9 +5,9 @@ const PROJECT_GENERAL_ACCESS_TYPE = {
 };
 
 const PROJECT_SHARING_TEXT = {
-  public: 'Shared URL',
-  protected: 'Shared URL & password',
-  restricted: 'Only invited',
+  public: 'Public',
+  protected: 'Password-protected',
+  restricted: 'Private',
 };
 
 const FLAG_HELP_GROUP = {

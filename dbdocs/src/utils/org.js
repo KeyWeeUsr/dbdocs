@@ -9,8 +9,13 @@ async function getProjectsByOrg (orgName, authConfig) {
   const { data: { org: { projects } } } = await axios.get(`${vars.apiUrl}/orgs/${orgName}/projects`, authConfig);
   return projects;
 }
+async function getProjectUserRolesByOrg (orgName, authConfig) {
+  const { data } = await axios.get(`${vars.apiUrl}/orgs/${orgName}/project_user_roles`, authConfig);
+  return data;
+}
 
 module.exports = {
   getOrg,
   getProjectsByOrg,
+  getProjectUserRolesByOrg,
 };

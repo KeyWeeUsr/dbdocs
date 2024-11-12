@@ -14,7 +14,7 @@ const { shouldAskForFeedback } = require('../utils/feedback');
 const { isValidName } = require('../validators/projectName');
 const parse = require('../utils/parse');
 const { PROJECT_GENERAL_ACCESS_TYPE, FLAG_HELP_GROUP } = require('../utils/constants');
-const { getProjectUrl } = require('../utils/helper');
+const { getProjectUrl, parseProjectName } = require('../utils/helper');
 const { getIsPublicValueFromBuildFlag } = require('../utils/helper');
 const { formatParserV2ErrorMessage } = require('../utils/error-formatter');
 
@@ -24,6 +24,16 @@ async function build (project, authConfig) {
     throw new Error('Something wrong :( Please try again.');
   }
   return { newProject: res.data.project, isCreated: res.status === 201 };
+}
+
+async function enterOrgName (defaultOrgName) {
+  const answer = await inquirer.prompt([
+    {
+      message: `Username: (${defaultOrgName})`,
+      name: 'orgName',
+    },
+  ]);
+  return answer.orgName || defaultOrgName;
 }
 
 async function enterProjectName () {
@@ -43,15 +53,26 @@ class BuildCommand extends Command {
     try {
       const authConfig = await verifyToken();
       const { flags, args } = await this.parse(BuildCommand);
-      const { public: publicFlag, private: privateFlag, password } = flags;
-      let { project } = flags;
+      const {
+        public: publicFlag, private: privateFlag, password, project,
+      } = flags;
 
       const { filepath } = args;
       let content = '';
       content = fs.readFileSync(path.resolve(process.cwd(), filepath), 'utf-8');
 
-      const userOrg = await getOrg(authConfig);
-      const org = userOrg.name;
+      const defaultOrgName = (await getOrg(authConfig)).name;
+      let orgName = '';
+      let projectNameFromDbml = null;
+      let projectNameFromInput = null;
+
+      // Re-parse the project name from argument to get the username
+      if (project) {
+        const parseRes = parseProjectName(project);
+
+        if (!parseRes) spinner.warn('Invalid username or project name!');
+        else [orgName, projectNameFromInput] = parseRes;
+      }
 
       // validate dbml syntax, get project name if it's already defined in the file
       spinner.text = 'Parsing file content';
@@ -60,7 +81,7 @@ class BuildCommand extends Command {
       try {
         model = await parse(content);
         if (!project) {
-          project = model.name;
+          projectNameFromDbml = model.name;
         }
         spinner.succeed('Parsing file content');
       } catch (error) {
@@ -69,34 +90,47 @@ class BuildCommand extends Command {
         throw new Error(message);
       }
 
+      if (!orgName) orgName = defaultOrgName;
+
+      let projectName = projectNameFromInput || projectNameFromDbml;
+
       // if project name is not defined yet, ask user to input the project name
-      if (!project) {
-        project = await enterProjectName();
+      if (!projectName) {
+        // ask the username to publish to
+        orgName = await enterOrgName(defaultOrgName);
+        while (!isValidName(orgName)) {
+          // eslint-disable-next-line max-len
+          spinner.warn('Invalid username! Username can only contain alphabets, numbers, space, "-" or "_", or leave it blank to publish to your personal account!');
+          // eslint-disable-next-line no-await-in-loop
+          orgName = await enterOrgName(defaultOrgName);
+        }
+        projectName = await enterProjectName();
       }
 
-      while (!isValidName(project)) {
-        spinner.warn('Invalid project name! Project name can only contain only alphabets, numbers, space, "-" or "_" and can not be blanked!');
+      while (!isValidName(projectName)) {
+        spinner.warn('Invalid project name! Project name can only contain alphabets, numbers, space, "-" or "_" and can not be blanked!');
         // eslint-disable-next-line no-await-in-loop
-        project = await enterProjectName();
+        projectName = await enterProjectName();
       }
 
       // pushing project
-      spinner.text = `Pushing new database to project ${project}`;
+      spinner.text = `Pushing new database to project ${projectName}`;
       spinner.start();
       try {
         const isPublic = getIsPublicValueFromBuildFlag(publicFlag, privateFlag, password);
         const { newProject } = await build({
-          projectName: project,
+          projectName,
           description: removeMd(model.description),
           isPublic,
           password,
-          orgName: org,
+          orgName,
           doc: {
             content,
           },
           shallowSchema: model.schemas,
           normalizedDatabase: model.normalizedDatabase,
           dbmlVersion: VERSION,
+          clientType: 'cli',
         }, authConfig);
         switch (newProject.generalAccessType) {
           case PROJECT_GENERAL_ACCESS_TYPE.public:
@@ -165,7 +199,7 @@ BuildCommand.description = 'build docs';
 // dbdocs build ./abc.dbml --project abc --public --private # error
 // dbdocs build ./abc.dbml --project abc --public --password 123456 # error
 BuildCommand.flags = {
-  project: Flags.string({ description: 'project name' }),
+  project: Flags.string({ description: '<username>/<project_name> or <project_name>' }),
   public: Flags.boolean({ description: 'anyone with the URL can access', helpGroup: FLAG_HELP_GROUP.sharing, exclusive: ['private', 'password'] }),
   private: Flags.boolean({ description: 'only invited people can access', helpGroup: FLAG_HELP_GROUP.sharing, exclusive: ['public', 'password'] }),
   password: Flags.string({

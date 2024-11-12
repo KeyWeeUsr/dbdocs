@@ -19,7 +19,24 @@ const LOGIN_METHODS = {
   GITHUB_GOOGLE: 'GitHub/Google',
 };
 
-const SUPPORTED_DATABASE_CONNECTORS = ['postgres', 'mysql', 'mssql'];
+const SUPPORTED_DATABASE_CONNECTORS = ['postgres', 'mysql', 'mssql', 'snowflake', 'bigquery'];
+
+/**
+ * Match window path
+ * Eg:
+ * - C:\Documents\code\credential.json
+ * - C:/Documents/code/credential.json
+ */
+const WINDOW_FILE_PATH_REGEX = /^[a-zA-Z]:[\\/](?:[^<>:"/\\|?*\n\r]+[\\/])*[^<>:"/\\|?*\n\r]*$/;
+
+/**
+ * Match unix system path
+ * Eg:
+ * - /Users/dev/code/credential.json
+ * - ~/code/credential.json
+ * - ./code/credential.json
+ */
+const UNIX_FILE_PATH_REGEX = /^[a-zA-Z]:[\\/](?:[^<>:"/\\|?*\n\r]+[\\/])*[^<>:"/\\|?*\n\r]*$/;
 
 module.exports = {
   PROJECT_GENERAL_ACCESS_TYPE,
@@ -27,4 +44,6 @@ module.exports = {
   FLAG_HELP_GROUP,
   LOGIN_METHODS,
   SUPPORTED_DATABASE_CONNECTORS,
+  WINDOW_FILE_PATH_REGEX,
+  UNIX_FILE_PATH_REGEX,
 };

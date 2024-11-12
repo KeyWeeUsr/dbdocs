@@ -1,8 +1,6 @@
 dbdocs
 ======
 
-
-
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/dbdocs.svg)](https://npmjs.org/package/dbdocs)
 [![Downloads/week](https://img.shields.io/npm/dw/dbdocs.svg)](https://npmjs.org/package/dbdocs)
@@ -12,6 +10,7 @@ dbdocs
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
+
 # Usage
 <!-- usage -->
 ```sh-session
@@ -29,7 +28,7 @@ USAGE
 # Commands
 <!-- commands -->
 * [`dbdocs build [FILEPATH]`](#dbdocs-build-filepath)
-* [`dbdocs db2dbml [FORMAT] [CONNECTION-STRING`](#dbdocs-db2dbml-format-connection-string)
+* [`dbdocs db2dbml [DATABASE-TYPE] [CONNECTION-STRING`](#dbdocs-db2dbml-database-type-connection-string)
 * [`dbdocs help [COMMAND]`](#dbdocs-help-command)
 * [`dbdocs login`](#dbdocs-login)
 * [`dbdocs logout`](#dbdocs-logout)
@@ -44,7 +43,7 @@ USAGE
 
 build docs
 
-```
+```bash
 USAGE
   $ dbdocs build [FILEPATH]
 
@@ -56,20 +55,17 @@ OPTIONS
   --project=project        project name
 ```
 
-## `dbdocs db2dbml [FORMAT] [CONNECTION-STRING]`
+## `dbdocs db2dbml [DATABASE-TYPE] [CONNECTION-STRING]`
 
 Generate DBML directly from a database
 
 ```bash
 USAGE
-  $ dbdocs db2dbml [FORMAT] [CONNECTION-STRING] [-o <value>]
+  $ dbdocs db2dbml [DATABASE-TYPE] [CONNECTION-STRING] [-o <value>]
 
 ARGUMENTS
-  FORMAT             your database format (postgres, mysql, mssql)
-  CONNECTION-STRING  your database connection string:
-                     - postgres: postgresql://user:password@localhost:5432/dbname
-                     - mysql: mysql://user:password@localhost:3306/dbname
-                     - mssql: 'Server=localhost,1433;Database=master;User Id=sa;Password=your_password;Encrypt=true;TrustServerCertificate=true;'
+  DATABASE-TYPE      your database type (postgres, mysql, mssql, snowflake, bigquery)
+  CONNECTION-STRING  your database connection string (See below examples for more details)
 
 FLAGS
   -o, --outFile=/path-to-your-file  output file path
@@ -77,13 +73,37 @@ FLAGS
 DESCRIPTION
   Generate DBML directly from a database
 
+EXAMPLES
+  Postgres:
+    $ db2dbml postgres 'postgresql://user:password@localhost:5432/dbname?schemas=schema1,schema2'
+
+  MySQL:
+    $ db2dbml mysql 'mysql://user:password@localhost:3306/dbname'
+
+  MSSQL:
+    $ db2dbml mssql 'Server=localhost,1433;Database=master;User Id=sa;Password=your_password;Encrypt=true;TrustServerCertificate=true;Schemas=schema1,schema2;'
+
+  Snowflake:
+    $ db2dbml snowflake 'SERVER=<account_identifier>.<region>;UID=<your_username>;PWD=<your_password>;DATABASE=<your_database>;WAREHOUSE=<your_warehouse>;ROLE=<your_role>;SCHEMAS=schema1,schema2;'
+
+  BigQuery:
+    $ db2dbml bigquery /path_to_json_credential.json
+
+    Note: Your JSON credential file must contain:
+    {
+      "project_id": "your-project-id",
+      "client_email": "your-client-email",
+      "private_key": "your-private-key",
+      "datasets": ["dataset_1", "dataset_2", ...]
+    }
+    If "datasets" key is not provided or is empty, it will fetch all datasets.
 ```
 
 ## `dbdocs help [COMMAND]`
 
 display help for dbdocs
 
-```
+```bash
 USAGE
   $ dbdocs help [COMMAND]
 
@@ -98,7 +118,7 @@ OPTIONS
 
 login to dbdocs
 
-```
+```bash
 USAGE
   $ dbdocs login
 
@@ -110,7 +130,7 @@ DESCRIPTION
 
 logout
 
-```
+```bash
 USAGE
   $ dbdocs logout
 
@@ -122,7 +142,7 @@ DESCRIPTION
 
 list projects
 
-```
+```bash
 USAGE
   $ dbdocs ls
 
@@ -134,7 +154,7 @@ DESCRIPTION
 
 set password for your project or remove password
 
-```
+```bash
 USAGE
   $ dbdocs password
 
@@ -148,7 +168,7 @@ OPTIONS
 
 remove project
 
-```
+```bash
 USAGE
   $ dbdocs remove [PROJECT_NAME]
 
@@ -160,7 +180,7 @@ ARGUMENTS
 
 change your username
 
-```
+```bash
 USAGE
   $ dbdocs rename
 
@@ -172,7 +192,7 @@ DESCRIPTION
 
 generate or revoke your authentication token
 
-```
+```bash
 USAGE
   $ dbdocs token
 
@@ -185,7 +205,7 @@ OPTIONS
 
 validate docs content
 
-```
+```bash
 USAGE
   $ dbdocs validate [FILEPATH]
 

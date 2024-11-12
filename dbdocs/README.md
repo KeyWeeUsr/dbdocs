@@ -76,16 +76,12 @@ DESCRIPTION
 EXAMPLES
   Postgres:
     $ db2dbml postgres 'postgresql://user:password@localhost:5432/dbname?schemas=schema1,schema2'
-
   MySQL:
     $ db2dbml mysql 'mysql://user:password@localhost:3306/dbname'
-
   MSSQL:
     $ db2dbml mssql 'Server=localhost,1433;Database=master;User Id=sa;Password=your_password;Encrypt=true;TrustServerCertificate=true;Schemas=schema1,schema2;'
-
   Snowflake:
     $ db2dbml snowflake 'SERVER=<account_identifier>.<region>;UID=<your_username>;PWD=<your_password>;DATABASE=<your_database>;WAREHOUSE=<your_warehouse>;ROLE=<your_role>;SCHEMAS=schema1,schema2;'
-
   BigQuery:
     $ db2dbml bigquery /path_to_json_credential.json
 

@@ -36,7 +36,7 @@ const WINDOW_FILE_PATH_REGEX = /^[a-zA-Z]:[\\/](?:[^<>:"/\\|?*\n\r]+[\\/])*[^<>:
  * - ~/code/credential.json
  * - ./code/credential.json
  */
-const UNIX_FILE_PATH_REGEX = /^[a-zA-Z]:[\\/](?:[^<>:"/\\|?*\n\r]+[\\/])*[^<>:"/\\|?*\n\r]*$/;
+const UNIX_FILE_PATH_REGEX = /^(\/|\.\/|~\/|\.\.\/)([^<>:"|?*\n\r]*\/?)*[^<>:"|?*\n\r]*$/;
 
 module.exports = {
   PROJECT_GENERAL_ACCESS_TYPE,

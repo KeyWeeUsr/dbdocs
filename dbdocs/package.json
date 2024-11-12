@@ -1,12 +1,12 @@
 {
   "name": "dbdocs",
-  "version": "0.7.0",
+  "version": "0.7.2",
   "author": "@holistics",
   "bin": {
     "dbdocs": "./bin/run"
   },
   "dependencies": {
-    "@dbml/core": "^2.4.2",
+    "@dbml/core": "^2.4.3",
     "@oclif/core": "1.12.1",
     "@oclif/plugin-help": "5.1.12",
     "axios": "0.27.2",

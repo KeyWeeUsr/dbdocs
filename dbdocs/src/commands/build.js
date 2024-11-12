@@ -11,6 +11,7 @@ const { getOrg } = require('../utils/org');
 const { shouldAskForFeedback } = require('../utils/feedback');
 const { isValidName } = require('../validators/projectName');
 const parse = require('../utils/parse');
+const { PROJECT_GENERAL_ACCESS_TYPE } = require('../utils/constants');
 
 async function build (project, authConfig) {
   const res = await axios.post(`${vars.apiUrl}/projects`, project, authConfig);
@@ -36,9 +37,9 @@ class BuildCommand extends Command {
 
     try {
       const authConfig = await verifyToken();
-
-      let { flags: { project, password } } = await this.parse(BuildCommand);
-      const { args } = await this.parse(BuildCommand);
+      const { flags, args } = await this.parse(BuildCommand);
+      const { restricted, password } = flags;
+      let { project } = flags;
 
       const { filepath } = args;
       let content = '';
@@ -70,6 +71,7 @@ class BuildCommand extends Command {
 
       while (!isValidName(project)) {
         spinner.warn('Invalid project name! Project name can only contain only alphabets, numbers, space, "-" or "_" and can not be blanked!');
+        // eslint-disable-next-line no-await-in-loop
         project = await enterProjectName();
       }
 
@@ -77,8 +79,10 @@ class BuildCommand extends Command {
       spinner.text = `Pushing new database to project ${project}`;
       spinner.start();
       try {
-        const { newProject, isCreated } = await build({
+        const { newProject } = await build({
           projectName: project,
+          // 'undefined' means not update isPublic value
+          isPublic: restricted ? false : undefined,
           password,
           orgName: org,
           doc: {
@@ -86,12 +90,18 @@ class BuildCommand extends Command {
           },
           shallowSchema: model.schemas,
         }, authConfig);
-        if (!newProject.isPublic) {
-          if (isCreated || password) {
-            spinner.succeed(`Password is set for '${newProject.name}'`);
-          }
-        } else {
-          spinner.warn(`Password is not set for '${newProject.name}'`);
+        switch (newProject.generalAccessType) {
+          case PROJECT_GENERAL_ACCESS_TYPE.public:
+            spinner.warn(`Project '${newProject.name}' is public, consider setting password or restricting access to it`);
+            break;
+          case PROJECT_GENERAL_ACCESS_TYPE.protected:
+            spinner.succeed(`Project '${newProject.name}' is protected with password`);
+            break;
+          case PROJECT_GENERAL_ACCESS_TYPE.restricted:
+            spinner.succeed(`Restricted access to project '${newProject.name}'`);
+            break;
+          default:
+            break;
         }
         spinner.succeed(`Done. Visit: ${chalk.cyan(`${vars.hostUrl}/${newProject.org.name}/${newProject.urlName}`)}\n`);
         if (shouldAskForFeedback()) {
@@ -136,9 +146,14 @@ class BuildCommand extends Command {
 
 BuildCommand.description = 'build docs';
 
+// Not allow using both --password and --restricted flags at the same time. For example:
+// dbdocs build ./abc.dbml --project abc --password 123456 # works
+// dbdocs build ./abc.dbml --project abc --restricted # works
+// dbdocs build ./abc.dbml --project abc --password 123456 --restricted # error
 BuildCommand.flags = {
   project: Flags.string({ description: 'project name' }),
-  password: Flags.string({ char: 'p', description: 'password for project' }),
+  restricted: Flags.boolean({ char: 'r', description: 'restrict access to project' }),
+  password: Flags.string({ char: 'p', description: 'password for project', exclusive: ['restricted'] }),
 };
 
 BuildCommand.args = [

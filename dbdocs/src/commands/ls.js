@@ -4,6 +4,7 @@ const { vars } = require('../vars');
 const verifyToken = require('../utils/verifyToken');
 const { getProjectsByOrg } = require('../utils/org');
 const { getOrg } = require('../utils/org');
+const { PROJECT_SHARING_TEXT } = require('../utils/constants');
 
 class LsCommand extends Command {
   async run () {
@@ -26,11 +27,9 @@ class LsCommand extends Command {
         name: {
           minWidth: 20,
         },
-        isPublic: {
-          minWidth: 12,
-          header: 'Password',
-          // eslint-disable-next-line no-confusing-arrow
-          get: (project) => project.isPublic ? 'No' : 'Yes',
+        sharing: {
+          minWidth: 23,
+          get: (project) => PROJECT_SHARING_TEXT[project.generalAccessType],
         },
         url: {
           minWidth: maxUrlWidth + 2,

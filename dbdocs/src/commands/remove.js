@@ -8,7 +8,8 @@ const verifyToken = require('../utils/verifyToken');
 const { getOrg } = require('../utils/org');
 
 const remove = async (projectName, org, authConfig) => {
-  await axios.delete(`${vars.apiUrl}/projects/${projectName}`, {
+  const encodedProjectName = encodeURIComponent(decodeURIComponent(projectName));
+  await axios.delete(`${vars.apiUrl}/projects/${encodedProjectName}`, {
     ...authConfig,
     data: org,
   });

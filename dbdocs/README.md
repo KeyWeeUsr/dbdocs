@@ -35,6 +35,7 @@ USAGE
 * [`dbdocs ls`](#dbdocs-ls)
 * [`dbdocs password`](#dbdocs-password)
 * [`dbdocs remove [PROJECT_NAME]`](#dbdocs-remove-project_name)
+* [`dbdocs rename`](#dbdocs-rename)
 * [`dbdocs token`](#dbdocs-token)
 * [`dbdocs validate [FILEPATH]`](#dbdocs-validate-filepath)
 
@@ -130,6 +131,19 @@ USAGE
 ARGUMENTS
   PROJECT_NAME  name of the project which you want to remove
 ```
+
+## `dbdocs rename`
+
+change your username
+
+```
+USAGE
+  $ dbdocs rename
+
+DESCRIPTION
+  change your username and your default organization name
+```
+
 ## `dbdocs token`
 
 generate or revoke your authentication token

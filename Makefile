@@ -15,6 +15,9 @@ dbdocs.tgz:
 		npm view dbdocs@$(DBDOCS_VERSION) dist.tarball | head -n 1 \
 	)
 
+clean:
+	-rm -r "./dbdocs.tgz" "./dbdocs"
+
 .PHONY: tag
 tag:
 	git add -f . && git stash

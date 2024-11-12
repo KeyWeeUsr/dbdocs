@@ -1,6 +1,6 @@
 {
   "name": "dbdocs",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "author": "@holistics",
   "bin": {
     "dbdocs": "./bin/run"
@@ -10,10 +10,10 @@
   },
   "dependencies": {
     "@dbml/connector": "^3.7.2",
-    "@dbml/core": "3.7.2",
+    "@dbml/core": "3.7.3",
     "@oclif/core": "1.12.1",
     "@oclif/plugin-help": "5.1.12",
-    "axios": "1.6.0",
+    "axios": "^1.7.4",
     "chalk": "^3.0.0",
     "dotenv": "^8.2.0",
     "inquirer": "^7.0.1",

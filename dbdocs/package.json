@@ -1,6 +1,6 @@
 {
   "name": "dbdocs",
-  "version": "0.9.2",
+  "version": "0.10.0",
   "author": "@holistics",
   "bin": {
     "dbdocs": "./bin/run"
@@ -9,7 +9,7 @@
     "oclif/**/ansi-regex": "^3.0.1"
   },
   "dependencies": {
-    "@dbml/core": "3.4.1",
+    "@dbml/core": "3.5.0",
     "@oclif/core": "1.12.1",
     "@oclif/plugin-help": "5.1.12",
     "axios": "1.6.0",

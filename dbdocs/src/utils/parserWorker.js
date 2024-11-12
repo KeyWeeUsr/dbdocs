@@ -5,6 +5,7 @@ function parse (content) {
   try {
     const parser = new Parser();
     const databaseObject = parser.parse(content, 'dbmlv2');
+    const normalizedDatabase = databaseObject.normalize();
     const schemas = databaseObject.schemas.map((schema) => ({
       name: schema.name,
       tables: schema.tables.map((table) => table.name),
@@ -14,6 +15,7 @@ function parse (content) {
       name: databaseObject.name,
       description: databaseObject.note,
       schemas,
+      normalizedDatabase,
     };
   } catch (err) {
     // Worker will cast custom error to `Error` type so we map DBML errors to JSON here to fix it.

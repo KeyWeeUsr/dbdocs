@@ -6,6 +6,7 @@ const path = require('path');
 const ora = require('ora');
 const chalk = require('chalk');
 const removeMd = require('remove-markdown');
+const { VERSION } = require('@dbml/core');
 const { vars } = require('../vars');
 const verifyToken = require('../utils/verifyToken');
 const { getOrg } = require('../utils/org');
@@ -94,6 +95,8 @@ class BuildCommand extends Command {
             content,
           },
           shallowSchema: model.schemas,
+          normalizedDatabase: model.normalizedDatabase,
+          dbmlVersion: VERSION,
         }, authConfig);
         switch (newProject.generalAccessType) {
           case PROJECT_GENERAL_ACCESS_TYPE.public:

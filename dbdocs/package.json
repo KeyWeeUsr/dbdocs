@@ -1,6 +1,6 @@
 {
   "name": "dbdocs",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "author": "@holistics",
   "bin": {
     "dbdocs": "./bin/run"

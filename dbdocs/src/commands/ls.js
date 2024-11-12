@@ -5,6 +5,7 @@ const verifyToken = require('../utils/verifyToken');
 const { getProjectsByOrg } = require('../utils/org');
 const { getOrg } = require('../utils/org');
 const { PROJECT_SHARING_TEXT } = require('../utils/constants');
+const { getProjectUrl } = require('../utils/helper');
 
 class LsCommand extends Command {
   async run () {
@@ -15,7 +16,7 @@ class LsCommand extends Command {
       this.log(chalk.bold(org.name));
 
       const [maxUrlWidth, maxUpdatedAtWidth] = projects.reduce((accumulator, project) => {
-        const url = `${vars.hostUrl}/${org.name}/${project.urlName}`;
+        const url = getProjectUrl(vars.hostUrl, org.name, project.urlName);
         const updatedAt = (new Date(project.updatedAt)).toLocaleString();
         return [
           accumulator[0] > url.length ? accumulator[0] : url.length,
@@ -33,7 +34,7 @@ class LsCommand extends Command {
         },
         url: {
           minWidth: maxUrlWidth + 2,
-          get: (project) => chalk.cyan(`${vars.hostUrl}/${org.name}/${project.urlName}`),
+          get: (project) => chalk.cyan(getProjectUrl(vars.hostUrl, org.name, project.urlName)),
         },
         updatedAt: {
           minWidth: maxUpdatedAtWidth + 2,

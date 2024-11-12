@@ -13,6 +13,7 @@ const { shouldAskForFeedback } = require('../utils/feedback');
 const { isValidName } = require('../validators/projectName');
 const parse = require('../utils/parse');
 const { PROJECT_GENERAL_ACCESS_TYPE, FLAG_HELP_GROUP } = require('../utils/constants');
+const { getProjectUrl } = require('../utils/helper');
 const { getIsPublicValueFromBuildFlag } = require('../utils/helper');
 
 async function build (project, authConfig) {
@@ -106,7 +107,7 @@ class BuildCommand extends Command {
           default:
             break;
         }
-        spinner.succeed(`Done. Visit: ${chalk.cyan(`${vars.hostUrl}/${newProject.org.name}/${newProject.urlName}`)}\n`);
+        spinner.succeed(`Done. Visit: ${chalk.cyan(getProjectUrl(vars.hostUrl, newProject.org.name, newProject.urlName))}\n`);
         if (shouldAskForFeedback()) {
           spinner.info(`Thanks for using dbdocs! We'd love to hear your feedback: ${chalk.cyan('https://form.jotform.com/200962053361448')}`);
         }

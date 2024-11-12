@@ -15,7 +15,7 @@ class LsCommand extends Command {
       this.log(chalk.bold(org.name));
 
       const [maxUrlWidth, maxUpdatedAtWidth] = projects.reduce((accumulator, project) => {
-        const url = `${vars.hostUrl}/${org.name}/${project.name}`;
+        const url = `${vars.hostUrl}/${org.name}/${project.urlName}`;
         const updatedAt = (new Date(project.updatedAt)).toLocaleString();
         return [
           accumulator[0] > url.length ? accumulator[0] : url.length,
@@ -35,7 +35,7 @@ class LsCommand extends Command {
         },
         url: {
           minWidth: maxUrlWidth + 2,
-          get: (project) => chalk.cyan(`${vars.hostUrl}/${org.name}/${project.name}`),
+          get: (project) => chalk.cyan(`${vars.hostUrl}/${org.name}/${project.urlName}`),
         },
         updatedAt: {
           minWidth: maxUpdatedAtWidth + 2,

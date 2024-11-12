@@ -19,7 +19,7 @@ $ npm install -g dbdocs
 $ dbdocs COMMAND
 running command...
 $ dbdocs (-v|--version|version)
-dbdocs/0.6.0 darwin-x64 node-v15.10.0
+dbdocs/0.6.1 darwin-x64 node-v15.10.0
 $ dbdocs --help [COMMAND]
 USAGE
   $ dbdocs COMMAND

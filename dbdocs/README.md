@@ -19,7 +19,7 @@ $ npm install -g dbdocs
 $ dbdocs COMMAND
 running command...
 $ dbdocs (-v|--version|version)
-dbdocs/0.3.0 linux-x64 node-v12.14.1
+dbdocs/0.3.1 linux-x64 node-v12.16.1
 $ dbdocs --help [COMMAND]
 USAGE
   $ dbdocs COMMAND
@@ -51,7 +51,7 @@ OPTIONS
   --project=project        project name
 ```
 
-_See code: [src/commands/build.js](https://github.com/holistics/dbdocs/blob/v0.3.0/src/commands/build.js)_
+_See code: [src/commands/build.js](https://github.com/holistics/dbdocs/blob/v0.3.1/src/commands/build.js)_
 
 ## `dbdocs help [COMMAND]`
 
@@ -82,7 +82,7 @@ DESCRIPTION
   login with your dbdocs credentials
 ```
 
-_See code: [src/commands/login.js](https://github.com/holistics/dbdocs/blob/v0.3.0/src/commands/login.js)_
+_See code: [src/commands/login.js](https://github.com/holistics/dbdocs/blob/v0.3.1/src/commands/login.js)_
 
 ## `dbdocs logout`
 
@@ -96,7 +96,7 @@ DESCRIPTION
   clears local login credentials
 ```
 
-_See code: [src/commands/logout.js](https://github.com/holistics/dbdocs/blob/v0.3.0/src/commands/logout.js)_
+_See code: [src/commands/logout.js](https://github.com/holistics/dbdocs/blob/v0.3.1/src/commands/logout.js)_
 
 ## `dbdocs password`
 
@@ -112,7 +112,7 @@ OPTIONS
   -s, --set=password          password for your project
 ```
 
-_See code: [src/commands/password.js](https://github.com/holistics/dbdocs/blob/v0.3.0/src/commands/password.js)_
+_See code: [src/commands/password.js](https://github.com/holistics/dbdocs/blob/v0.3.1/src/commands/password.js)_
 
 ## `dbdocs remove [PROJECT_NAME]`
 
@@ -126,5 +126,5 @@ ARGUMENTS
   PROJECT_NAME  name of the project which you want to remove
 ```
 
-_See code: [src/commands/remove.js](https://github.com/holistics/dbdocs/blob/v0.3.0/src/commands/remove.js)_
+_See code: [src/commands/remove.js](https://github.com/holistics/dbdocs/blob/v0.3.1/src/commands/remove.js)_
 <!-- commandsstop -->

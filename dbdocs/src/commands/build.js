@@ -8,6 +8,8 @@ const chalk = require('chalk');
 const { vars } = require('../vars');
 const verifyToken = require('../utils/verifyToken');
 const { getOrg } = require('../utils/org');
+const { shouldAskForFeedback } = require('../utils/feedback');
+const { isValidName } = require('../validators/projectName');
 
 async function validate (content) {
   const res = await axios.post(`${vars.apiUrl}/parse`, {
@@ -29,9 +31,20 @@ async function build (project, authToken) {
   return { newProject: res.data.project, isCreated: res.status === 201 };
 }
 
+async function enterProjectName () {
+  const answer = await inquirer.prompt([
+    {
+      message: 'Project name: ',
+      name: 'project',
+    },
+  ]);
+  return answer.project;
+}
+
 class BuildCommand extends Command {
   async run () {
     const spinner = ora({});
+
     try {
       const authToken = await verifyToken();
 
@@ -67,13 +80,12 @@ class BuildCommand extends Command {
 
       // if project name is not defined yet, ask user to input the project name
       if (!project) {
-        const answer = await inquirer.prompt([
-          {
-            message: 'Project name: ',
-            name: 'project',
-          },
-        ]);
-        project = answer.project;
+        project = await enterProjectName();
+      }
+
+      while (!isValidName(project)) {
+        spinner.warn('Invalid project name! Project name can only contain only alphabets, numbers, space, "-" or "_" and can not be blanked!');
+        project = await enterProjectName();
       }
 
       // pushing project
@@ -95,7 +107,10 @@ class BuildCommand extends Command {
         } else {
           spinner.warn(`Password is not set for '${newProject.name}'`);
         }
-        spinner.succeed(`Done. Visit: ${chalk.cyan(`${vars.hostUrl}/${newProject.org.name}/${newProject.urlName}`)}`);
+        spinner.succeed(`Done. Visit: ${chalk.cyan(`${vars.hostUrl}/${newProject.org.name}/${newProject.urlName}`)}\n`);
+        if (shouldAskForFeedback()) {
+          spinner.info(`Thanks for using dbdocs! We'd love to hear your feedback: ${chalk.cyan('https://form.jotform.com/200962053361448')}`);
+        }
       } catch (err) {
         let message = err.message || 'Something wrong :( Please try again.';
         if (err.response) {

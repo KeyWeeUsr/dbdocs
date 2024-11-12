@@ -122,7 +122,7 @@ OPTIONS
 
 ## `dbdocs remove [PROJECT_NAME]`
 
-remove docs
+remove project
 
 ```
 USAGE

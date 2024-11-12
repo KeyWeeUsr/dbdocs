@@ -10,7 +10,12 @@ const PROJECT_SHARING_TEXT = {
   restricted: 'Only invited',
 };
 
+const FLAG_HELP_GROUP = {
+  sharing: 'sharing',
+};
+
 module.exports = {
   PROJECT_GENERAL_ACCESS_TYPE,
   PROJECT_SHARING_TEXT,
+  FLAG_HELP_GROUP,
 };

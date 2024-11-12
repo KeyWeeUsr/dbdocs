@@ -11,7 +11,8 @@ const { getOrg } = require('../utils/org');
 const { shouldAskForFeedback } = require('../utils/feedback');
 const { isValidName } = require('../validators/projectName');
 const parse = require('../utils/parse');
-const { PROJECT_GENERAL_ACCESS_TYPE } = require('../utils/constants');
+const { PROJECT_GENERAL_ACCESS_TYPE, FLAG_HELP_GROUP } = require('../utils/constants');
+const { getIsPublicValueFromBuildFlag } = require('../utils/helper');
 
 async function build (project, authConfig) {
   const res = await axios.post(`${vars.apiUrl}/projects`, project, authConfig);
@@ -38,7 +39,7 @@ class BuildCommand extends Command {
     try {
       const authConfig = await verifyToken();
       const { flags, args } = await this.parse(BuildCommand);
-      const { restricted, password } = flags;
+      const { public: publicFlag, private: privateFlag, password } = flags;
       let { project } = flags;
 
       const { filepath } = args;
@@ -79,10 +80,10 @@ class BuildCommand extends Command {
       spinner.text = `Pushing new database to project ${project}`;
       spinner.start();
       try {
+        const isPublic = getIsPublicValueFromBuildFlag(publicFlag, privateFlag, password);
         const { newProject } = await build({
           projectName: project,
-          // 'undefined' means not update isPublic value
-          isPublic: restricted ? false : undefined,
+          isPublic,
           password,
           orgName: org,
           doc: {
@@ -98,7 +99,7 @@ class BuildCommand extends Command {
             spinner.succeed(`Project '${newProject.name}' is protected with password`);
             break;
           case PROJECT_GENERAL_ACCESS_TYPE.restricted:
-            spinner.succeed(`Restricted access to project '${newProject.name}'`);
+            spinner.succeed(`Project '${newProject.name}' is private`);
             break;
           default:
             break;
@@ -146,14 +147,20 @@ class BuildCommand extends Command {
 
 BuildCommand.description = 'build docs';
 
-// Not allow using both --password and --restricted flags at the same time. For example:
+// `public`, `private` and `password` are mutually exclusive flags. For example:
+// dbdocs build ./abc.dbml --project abc --public # works
+// dbdocs build ./abc.dbml --project abc --private # works
 // dbdocs build ./abc.dbml --project abc --password 123456 # works
-// dbdocs build ./abc.dbml --project abc --restricted # works
-// dbdocs build ./abc.dbml --project abc --password 123456 --restricted # error
+// dbdocs build ./abc.dbml --project abc --password 123456 --private # error
+// dbdocs build ./abc.dbml --project abc --public --private # error
+// dbdocs build ./abc.dbml --project abc --public --password 123456 # error
 BuildCommand.flags = {
   project: Flags.string({ description: 'project name' }),
-  restricted: Flags.boolean({ char: 'r', description: 'restrict access to project' }),
-  password: Flags.string({ char: 'p', description: 'password for project', exclusive: ['restricted'] }),
+  public: Flags.boolean({ description: 'anyone with the URL can access', helpGroup: FLAG_HELP_GROUP.sharing, exclusive: ['private', 'password'] }),
+  private: Flags.boolean({ description: 'only invited people can access', helpGroup: FLAG_HELP_GROUP.sharing, exclusive: ['public', 'password'] }),
+  password: Flags.string({
+    char: 'p', description: 'anyone with the URL + password can access', helpGroup: FLAG_HELP_GROUP.sharing, exclusive: ['public', 'private'],
+  }),
 };
 
 BuildCommand.args = [

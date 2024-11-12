@@ -67,7 +67,7 @@ class RemoveCommand extends Command {
   }
 }
 
-RemoveCommand.description = 'remove docs';
+RemoveCommand.description = 'remove project';
 
 RemoveCommand.args = [
   { name: 'project_name', description: 'name of the project which you want to remove' },
